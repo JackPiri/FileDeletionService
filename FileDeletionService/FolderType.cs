@@ -25,12 +25,12 @@ namespace FileDeletionService
         public bool DeleteSubfoldersIfEmpty { get; set; }
 
         /// <summary>
-        /// First subfolder inspection deepness (greater or equal 0, lower or equal rpLastSubfolderDeepnessToInspect)
+        /// First subfolder inspection deepness (greater or equal 0, lower or equal LastSubfolderDeepnessToInspect)
         /// </summary>
         public int FirstSubfolderDeepnessToInspect { get; set; }
 
         /// <summary>
-        /// Last subfolder inspection deepness (greater or equal 0, greater or equal rpFirstSubfolderDeepnessToInspect)
+        /// Last subfolder inspection deepness (greater or equal 0, greater or equal FirstSubfolderDeepnessToInspect)
         /// </summary>
         public int LastSubfolderDeepnessToInspect { get; set; }
 

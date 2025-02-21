@@ -18,22 +18,22 @@ namespace FileDeletionService
         /// <summary>
         /// Deletion trigger time (in hours)
         /// </summary>
-        private int _triggerTime;
+        private readonly int _triggerTime;
 
         /// <summary>
         /// List of disk types targetable for deletion
         /// </summary>
-        private List<DiskType> _diskTypesList;
+        private readonly List<DiskType> _diskTypesList;
 
         /// <summary>
         /// File deletion task
         /// </summary>
-        private Task<FileDeletionServiceErrorCodes> _fileDeletionTask;
+        private Task<FileDeletionServiceErrorCodes>? _fileDeletionTask;
 
         /// <summary>
         /// Cancellation token for file deletion task
         /// </summary>
-        private CancellationTokenSource _tokenSource;
+        private CancellationTokenSource? _tokenSource;
 
         #endregion
 
@@ -150,7 +150,7 @@ namespace FileDeletionService
 
             try
             {
-                _tokenSource.Cancel();
+                _tokenSource?.Cancel();
             }
             catch (Exception)
             {
