@@ -1,0 +1,19 @@
+﻿<Window x:Class="FileDeletionService_Test.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileDeletionService_Test"
+        mc:Ignorable="d"
+        Title="FileDeletionService_Test" Height="350" Width="525" Loaded="MainWindow_OnLoaded">
+    <Grid>
+        <StackPanel>
+            <Button Click="Start_OnClick" Height="50" Width="100" Margin="10">
+                START
+            </Button>
+            <Button Click="Stop_OnClick" Height="50" Width="100" Margin="10">
+                STOP
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>
