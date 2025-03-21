@@ -69,10 +69,8 @@ namespace FileDeletionService
         /// <summary>
         /// Add file type to the files targeted for deletion
         /// </summary>
-        /// <param name="fileExtension"></param>
-        /// <param name="fileMaxDuration"></param>
-        /// <param name="pFileExtension"> File type extension (with dot) </param>
-        /// <param name="pFileMaxDuration"> File type max duration (in days), breaking this limit would trigger file deletion </param>
+        /// <param name="fileExtension"> File type extension (with dot) </param>
+        /// <param name="fileMaxDuration"> File type max duration (in days), breaking this limit would trigger file deletion </param>
         /// <returns> Error code </returns>
         public FileDeletionServiceErrorCodes AddFile(string fileExtension, int fileMaxDuration)
         {
@@ -92,12 +90,9 @@ namespace FileDeletionService
         /// <summary>
         /// Check if a folder should be deleted
         /// </summary>
-        /// <param name="folderFullPath"></param>
-        /// <param name="isFolderToBeDeleted"></param>
-        /// <param name="isSubfolder"></param>
-        /// <param name="pFolderFullPath"> Folder full path </param>
-        /// <param name="pIsFolderToBeDeleted"> Flag for deletion </param>
-        /// <param name="pIsSubfolder"> Option for indicating the folder is a subfolder </param>
+        /// <param name="folderFullPath"> Folder full path </param>
+        /// <param name="isFolderToBeDeleted"> Flag for deletion </param>
+        /// <param name="isSubfolder"> Option for indicating the folder is a subfolder </param>
         /// <returns> Error code </returns>
         public FileDeletionServiceErrorCodes IsFolderToBeDeleted(string folderFullPath, ref bool isFolderToBeDeleted, bool isSubfolder = false)
         {

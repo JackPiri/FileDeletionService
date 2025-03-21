@@ -53,14 +53,15 @@ namespace FileDeletionService
         /// Add a disk type to the disks targeted for deletion
         /// </summary>
         /// <param name="diskName"> Disk name (with colon) </param>
-        /// <param name="minimumFreeSpaceRequired"> Minimum free space required in the disks targeted (in GBs) </param>
+        /// <param name="minimumFreeSpaceRequired"> Minimum free space required in the targeted disk (in GBs) </param>
+        /// <param name="maximumUsedSpace"> Maximum used space (by the targeted folders/files) in the targeted disk (in GBs) </param>
         /// <returns> Error code </returns>
-        public FileDeletionServiceErrorCodes AddDisk(string diskName, int minimumFreeSpaceRequired = 0)
+        public FileDeletionServiceErrorCodes AddDisk(string diskName, int minimumFreeSpaceRequired = 0, int maximumUsedSpace = 1000)
         {
             FileDeletionServiceErrorCodes errorCode = FileDeletionServiceErrorCodes.NoError;
 
             if (_diskTypesList.Any(disktype => disktype.DiskName == diskName) == false)
-                _diskTypesList.Add(new DiskType(diskName, minimumFreeSpaceRequired));
+                _diskTypesList.Add(new DiskType(diskName, minimumFreeSpaceRequired, maximumUsedSpace));
             else
                 errorCode = FileDeletionServiceErrorCodes.DiskTypeAlreadyPresent;
 
@@ -177,9 +178,10 @@ namespace FileDeletionService
             {
                 try
                 {
-                    //check based on folders searching for files older than their max duration
                     foreach (DiskType disktype in _diskTypesList)
                     {
+                        long usedSpaceInBytes = 0;
+                        //check based on folders searching for files older than their max duration
                         foreach (FolderType foldertype in disktype.FolderTypesList)
                         {
                             if (Directory.Exists(foldertype.FolderName) == true)
@@ -187,19 +189,18 @@ namespace FileDeletionService
                                 string currentSubfolder = foldertype.FolderName;
                                 int currentDeepness = 0;
 
-                                errorCode = DeleteInsideFolderIterative(foldertype, currentSubfolder, currentDeepness);
+                                errorCode = DeleteInsideFolderIterative(foldertype, currentSubfolder, currentDeepness, ref usedSpaceInBytes);
                             }
                         }
-                    }
 
-                    //check based on folders granting for minimum free space required
-                    foreach (DiskType disktype in _diskTypesList)
-                    {
+                        //check based on folders granting for minimum free space required and maximum used space
                         DriveInfo driveInfo = new DriveInfo(disktype.DiskName);
-                        long minimumFreeSpaceRequiredInBytes = 0, freeSpaceInBytes = 0;
-                        minimumFreeSpaceRequiredInBytes = ((long)disktype.MinimumFreeSpaceRequired * 1024 * 1024 * 1024);
+                        long minimumFreeSpaceRequiredInBytes = 0, freeSpaceInBytes = 0, maximumUsedSpaceInBytes;
+                        minimumFreeSpaceRequiredInBytes = ((long)disktype.MinimumFreeSpaceRequired) * 1024 * 1024 * 1024;
+                        maximumUsedSpaceInBytes = ((long)disktype.MaximumUsedSpace) * 1024 * 1024 * 1024;
                         freeSpaceInBytes = driveInfo.TotalFreeSpace;
-                        if (freeSpaceInBytes < minimumFreeSpaceRequiredInBytes)
+                        if (freeSpaceInBytes < minimumFreeSpaceRequiredInBytes ||
+                            usedSpaceInBytes > maximumUsedSpaceInBytes)
                         {
                             List<FileInfo> fileInfosList = new List<FileInfo>();
                             foreach (FolderType foldertype in disktype.FolderTypesList)
@@ -216,7 +217,8 @@ namespace FileDeletionService
                             long totalBytesDeleted = 0;
                             for (int i = 0; i < fileInfosList.Count; i++)
                             {
-                                if (totalBytesDeleted < minimumFreeSpaceRequiredInBytes - freeSpaceInBytes)
+                                if (totalBytesDeleted < minimumFreeSpaceRequiredInBytes - freeSpaceInBytes ||
+                                    totalBytesDeleted < usedSpaceInBytes - maximumUsedSpaceInBytes)
                                 {
                                     totalBytesDeleted += fileInfosList[i].Length;
                                     fileInfosList[i].Delete();
@@ -245,13 +247,15 @@ namespace FileDeletionService
         /// <param name="currentFolder"> Current folder to delete into </param>
         /// <param name="currentDeepness"> Current folder deepness inspection </param>
         /// <returns> Error code </returns>
-        private FileDeletionServiceErrorCodes DeleteInsideFolderIterative(FolderType folderType, string currentFolder, int currentDeepness)
+        private FileDeletionServiceErrorCodes DeleteInsideFolderIterative(FolderType folderType, string currentFolder, int currentDeepness, ref long usedSpaceInBytes)
         {
             FileDeletionServiceErrorCodes errorCode = FileDeletionServiceErrorCodes.NoError;
 
             string[] filesOfFolder = Directory.GetFiles(currentFolder);
             string[] subfoldersOfFolder;
             bool toBeDeleted = false;
+            if (currentDeepness == 0)
+                usedSpaceInBytes = 0;
 
             //delete target files in current folder
             if (currentDeepness >= folderType.FirstSubfolderDeepnessToInspect && currentDeepness <= folderType.LastSubfolderDeepnessToInspect)
@@ -269,6 +273,8 @@ namespace FileDeletionService
 
                     if (toBeDeleted == true)
                         fileInfo.Delete();
+                    else
+                        usedSpaceInBytes += fileInfo.Length;
                 }
             }
 
@@ -278,7 +284,7 @@ namespace FileDeletionService
                 subfoldersOfFolder = Directory.GetDirectories(currentFolder);
                 foreach (string subfolder in subfoldersOfFolder)
                 {
-                    DeleteInsideFolderIterative(folderType, subfolder, currentDeepness + 1);
+                    DeleteInsideFolderIterative(folderType, subfolder, currentDeepness + 1, ref usedSpaceInBytes);
                 }
             }
 
