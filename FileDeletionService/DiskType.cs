@@ -15,9 +15,14 @@ namespace FileDeletionService
         public string DiskName { get; set; }
 
         /// <summary>
-        /// Minimum free space required in the disks targeted (in GBs)
+        /// Minimum free space required in the targeted disk (in GBs)
         /// </summary>
         public int MinimumFreeSpaceRequired { get; set; }
+
+        /// <summary>
+        /// Maximum used space (by the targeted folders/files) in the targeted disk (in GBs)
+        /// </summary>
+        public int MaximumUsedSpace { get; set; }
 
         /// <summary>
         /// List of folder types targetable for deletion
@@ -32,13 +37,15 @@ namespace FileDeletionService
         /// Disk type constructor
         /// </summary>
         /// <param name="diskName"> Disk name (with colon) </param>
-        /// <param name="minimumFreeSpaceRequired"> Minimum free space required in the disks targeted (in GBs) </param>
-        public DiskType(string diskName, int minimumFreeSpaceRequired)
+        /// <param name="minimumFreeSpaceRequired"> Minimum free space required in the targeted disk (in GBs) </param>
+        /// <param name="maximumUsedSpace"> Maximum used space (by the targeted folders/files) in the targeted disk (in GBs) </param>
+        public DiskType(string diskName, int minimumFreeSpaceRequired, int maximumUsedSpace)
         {
             if (diskName.Contains(':') == false)
                 diskName = diskName + ':';
             DiskName = diskName;
             MinimumFreeSpaceRequired = minimumFreeSpaceRequired;
+            MaximumUsedSpace = maximumUsedSpace;
             FolderTypesList = new List<FolderType>();
         }
 
