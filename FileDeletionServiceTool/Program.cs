@@ -32,13 +32,16 @@ namespace FileDeletionServiceTool
                     {
                         string diskName = "";
                         int minimumFreeSpaceRequired = 0;
+                        int maximumUsedSpace = 0;
                         if ((commandLineArg.Split('=')[1]).Split('|').Length > 0)
                             diskName = (commandLineArg.Split('=')[1]).Split('|')[0];
                         if ((commandLineArg.Split('=')[1]).Split('|').Length > 1)
                             int.TryParse((commandLineArg.Split('=')[1]).Split('|')[1], out minimumFreeSpaceRequired);
+                        if ((commandLineArg.Split('=')[1]).Split('|').Length > 2)
+                            int.TryParse((commandLineArg.Split('=')[1]).Split('|')[2], out maximumUsedSpace);
 
                         if (diskName != "")
-                            fileDeletionManager.AddDisk(diskName, minimumFreeSpaceRequired);
+                            fileDeletionManager.AddDisk(diskName, minimumFreeSpaceRequired, maximumUsedSpace);
                     }
                 }
             }
