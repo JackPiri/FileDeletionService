@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -153,7 +153,7 @@ namespace FileDeletionService
             {
                 _tokenSource?.Cancel();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 errorCode = FileDeletionServiceErrorCodes.StoppingDeletion;
             }
@@ -220,8 +220,15 @@ namespace FileDeletionService
                                 if (totalBytesDeleted < minimumFreeSpaceRequiredInBytes - freeSpaceInBytes ||
                                     totalBytesDeleted < usedSpaceInBytes - maximumUsedSpaceInBytes)
                                 {
-                                    totalBytesDeleted += fileInfosList[i].Length;
-                                    fileInfosList[i].Delete();
+                                    try
+                                    {
+                                        fileInfosList[i].Delete();
+                                        totalBytesDeleted += fileInfosList[i].Length;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        // unable to delete
+                                    }
                                 }
                                 else
                                     break;
@@ -271,8 +278,20 @@ namespace FileDeletionService
                             break;
                     }
 
+
+
                     if (toBeDeleted == true)
-                        fileInfo.Delete();
+                    {
+                        try
+                        {
+                            fileInfo.Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            // unable to delete
+                            usedSpaceInBytes += fileInfo.Length;
+                        }
+                    }
                     else
                         usedSpaceInBytes += fileInfo.Length;
                 }
