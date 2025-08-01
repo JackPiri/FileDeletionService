@@ -14,7 +14,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/JackPiri/FileDeletionService</RepositoryUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>$(VersionPrefix)1.1.0</Version>
+    <Version>$(VersionPrefix)1.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
