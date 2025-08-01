@@ -1,12 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FileDeletionService;
-
-namespace FileDeletionService
+﻿namespace FileDeletionService
 {
     /// <summary>
     /// File deletion manager
