@@ -1,6 +1,5 @@
-﻿using System.Windows;
-using System.Windows.Threading;
-using FileDeletionService;
+﻿using FileDeletionService;
+using System.Windows;
 
 namespace FileDeletionService_Test
 {

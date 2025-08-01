@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using FileDeletionService;
-
-namespace FileDeletionService
+﻿namespace FileDeletionService
 {
     internal class FolderType
     {

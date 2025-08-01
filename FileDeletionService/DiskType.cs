@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FileDeletionService;
-
-namespace FileDeletionService
+﻿namespace FileDeletionService
 {
     internal class DiskType
     {
